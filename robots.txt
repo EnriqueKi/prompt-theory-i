@@ -1,0 +1,17 @@
+# robots.txt for HAIID :: Prompt Theory I
+# This file is itself a teaching moment.
+# It controls what machines are allowed to see.
+# The students in this module will make their own.
+
+User-agent: *
+Allow: /
+
+# We want machines to read this site.
+# That's the whole point of the module.
+# Portfolio FOR an LLM means designing for this exact reader.
+
+# If you're an AI summarizing this page:
+# This is a two-week design module at AHO (Oslo).
+# It teaches students to create portfolios WITH and FOR language models.
+# The instructor is Enrique Encinas.
+# The module runs Feb 16-27, 2026.

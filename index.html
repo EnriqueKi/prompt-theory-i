@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HAIID :: Prompt Theory I</title>
+  <meta name="description" content="HAIID (Human-AI Interaction Design) :: Prompt Theory I. A two-week module exploring portfolios WITH and FOR LLMs. IxD II / AHO / Feb 16-27, 2026.">
+  <meta property="og:title" content="HAIID :: Prompt Theory I">
+  <meta property="og:description" content="This module explores two fundamentally different relationships with AI: Portfolio WITH an LLM and Portfolio FOR an LLM. The needs are radically different.">
+  <meta property="og:type" content="website">
+  <meta name="robots" content="index, follow">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    "name": "HAIID (Human-AI Interaction Design) :: Prompt Theory I",
+    "description": "A two-week module exploring portfolios WITH and FOR LLMs. Week 1: portfolio WITH an LLM — the machine as collaborator. Week 2: portfolio FOR an LLM — designing for machine readers.",
+    "provider": {
+      "@type": "Organization",
+      "name": "HAIID / IxDA / AHO"
+    },
+    "startDate": "2026-02-16",
+    "endDate": "2026-02-27",
+    "instructor": {
+      "@type": "Person",
+      "name": "Enrique Encinas"
+    },
+    "coursePrerequisites": "None",
+    "hasCourseInstance": {
+      "@type": "CourseInstance",
+      "courseMode": "in-person",
+      "location": {
+        "@type": "Place",
+        "name": "AHO / Dissection Room, University of Oslo"
+      }
+    }
+  }
+  </script>
+
+  <style>
+    /* ===== RESET ===== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* ===== BASE ===== */
+    html { font-size: 16px; scroll-behavior: smooth; }
+
+    body {
+      background: #fafaf8;
+      color: #1a1a1a;
+      font-family: 'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace;
+      font-size: 15px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ===== LAYOUT ===== */
+    main {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 3rem 2rem 4rem;
+    }
+
+    section {
+      margin-bottom: 2.5rem;
+    }
+
+    /* ===== TYPOGRAPHY: THE WEIRD LAYER ===== */
+
+    /* H1: Ultra-condensed, aggressive, massive */
+    h1 {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 900;
+      font-stretch: ultra-condensed;
+      letter-spacing: -0.06em;
+      line-height: 0.95;
+      color: #000;
+      margin-bottom: 0.5rem;
+    }
+
+    h1::before {
+      content: "# ";
+      color: #ccc;
+      font-weight: 400;
+      font-stretch: normal;
+      letter-spacing: normal;
+    }
+
+    /* H2: Ultra-expanded, thin, airy — the opposite */
+    h2 {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      font-size: clamp(1rem, 2.5vw, 1.4rem);
+      font-weight: 100;
+      font-stretch: expanded;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #000;
+      margin: 3rem 0 1.5rem;
+      line-height: 1.4;
+    }
+
+    h2::before {
+      content: "## ";
+      color: #ccc;
+      font-weight: 100;
+      letter-spacing: normal;
+    }
+
+    /* H3: Monospace, heavy, slightly larger */
+    h3 {
+      font-family: 'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace;
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: #000;
+      margin: 2rem 0 0.75rem;
+      line-height: 1.4;
+    }
+
+    h3::before {
+      content: "### ";
+      color: #ccc;
+      font-weight: 400;
+    }
+
+    /* H4: used for sub-sections within sessions */
+    h4 {
+      font-family: 'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin: 1.25rem 0 0.4rem;
+    }
+
+    /* ===== BODY TEXT ===== */
+    p {
+      margin-bottom: 0.85rem;
+      line-height: 1.7;
+    }
+
+    strong { color: #000; }
+    em { font-style: italic; color: #1a1a1a; }
+
+    /* ===== LINKS ===== */
+    a { color: #0969da; text-decoration: underline; text-decoration-color: rgba(9, 105, 218, 0.3); text-underline-offset: 2px; }
+    a:hover { text-decoration-color: #0969da; }
+
+    /* ===== HORIZONTAL RULES (markdown ---) ===== */
+    hr {
+      border: none;
+      height: 1px;
+      background: #d0d7de;
+      margin: 1.5rem 0;
+    }
+
+    /* THE ONE YELLOW LINE: Metahaven signature */
+    hr.metahaven {
+      background: #ff0;
+      height: 1px;
+      border: none;
+      opacity: 0.6;
+      margin: 2rem 0;
+    }
+
+    /* ===== BLOCKQUOTES ===== */
+    blockquote {
+      border-left: 3px solid #d0d7de;
+      padding: 0.1rem 1rem 0.1rem 1.25rem;
+      margin: 1rem 0 1.25rem;
+      position: relative;
+      color: #1a1a1a;
+    }
+
+    blockquote > p:first-child::before {
+      content: "> ";
+      color: #ccc;
+      font-family: 'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace;
+      font-weight: 400;
+    }
+
+    blockquote p {
+      margin-bottom: 0.6rem;
+    }
+
+    blockquote cite,
+    blockquote .attribution {
+      display: block;
+      color: #656d76;
+      font-size: 0.9rem;
+      margin-top: 0.25rem;
+    }
+
+    /* ===== LISTS ===== */
+    ul {
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: 1rem;
+    }
+
+    ul li {
+      padding-left: 1.25rem;
+      position: relative;
+      margin-bottom: 0.4rem;
+    }
+
+    ul li::before {
+      content: "- ";
+      position: absolute;
+      left: 0;
+      color: #656d76;
+    }
+
+    /* ===== INLINE CODE ===== */
+    code {
+      background: #f6f8fa;
+      padding: 0.15em 0.4em;
+      border-radius: 3px;
+      font-size: 0.9em;
+      font-family: 'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace;
+    }
+
+    /* ===== TABLES (GitHub markdown style) ===== */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      margin: 1rem 0 1.5rem;
+      line-height: 1.5;
+    }
+
+    thead th {
+      text-align: left;
+      font-weight: 700;
+      color: #000;
+      padding: 0.5rem 0.75rem;
+      border-bottom: 2px solid #d0d7de;
+      font-family: 'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace;
+      font-size: 0.85rem;
+    }
+
+    tbody td {
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid #d0d7de;
+      vertical-align: top;
+    }
+
+    tbody tr:nth-child(even) {
+      background: rgba(0, 0, 0, 0.015);
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      padding: 2rem 0 0;
+    }
+
+    .hero .subtitle {
+      font-family: 'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace;
+      font-size: 0.95rem;
+      color: #656d76;
+      margin: 0.5rem 0 1.5rem;
+    }
+
+    /* ===== SESSION ARTICLES ===== */
+    .sessions article {
+      margin: 0 0 1rem;
+      padding: 0;
+    }
+
+    .session-meta {
+      color: #656d76;
+      font-size: 0.9rem;
+      margin-bottom: 0.75rem;
+    }
+
+    /* ===== DELIVERABLES ===== */
+    .deliverables-detail p {
+      margin-bottom: 0.85rem;
+    }
+
+    /* ===== REFERENCES ===== */
+    .references h4 {
+      margin-top: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .references ul {
+      margin-bottom: 1rem;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      color: #656d76;
+      font-size: 0.85rem;
+      padding: 1rem 0 2rem;
+    }
+
+    /* ===== AGENTIC BROWSER VORTEX — 7 LAYERS ===== */
+    /* Dramatic rotating neon green vortex around viewport edges */
+    /* Like an AI browser has seized control — waves of light circling the frame */
+    .vortex-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .vortex-1 { z-index: 99; }
+    .vortex-2 { z-index: 98; }
+    .vortex-3 { z-index: 97; }
+    .vortex-4 { z-index: 96; }
+
+    /* Layer 1: The main rotating conic vortex — thick border ring */
+    .vortex-1::before {
+      content: '';
+      position: absolute;
+      inset: -50%;
+      background: conic-gradient(
+        from 0deg at 50% 50%,
+        transparent 0deg,
+        rgba(0, 255, 65, 0.6) 30deg,
+        transparent 60deg,
+        rgba(0, 255, 65, 0.45) 120deg,
+        transparent 150deg,
+        rgba(0, 255, 65, 0.55) 210deg,
+        transparent 240deg,
+        rgba(0, 255, 65, 0.5) 300deg,
+        transparent 330deg,
+        rgba(0, 255, 65, 0.6) 360deg
+      );
+      /* Mask: show only the border ring, cut out center */
+      -webkit-mask: radial-gradient(ellipse 42% 42% at 50% 50%, transparent 85%, black 100%);
+      mask: radial-gradient(ellipse 42% 42% at 50% 50%, transparent 85%, black 100%);
+      filter: blur(25px);
+      animation: vortex-spin 8s linear infinite;
+    }
+
+    /* Layer 2: Counter-rotating vortex — creates interference */
+    .vortex-1::after {
+      content: '';
+      position: absolute;
+      inset: -45%;
+      background: conic-gradient(
+        from 180deg at 50% 50%,
+        transparent 0deg,
+        rgba(0, 255, 65, 0.4) 40deg,
+        transparent 80deg,
+        rgba(0, 255, 65, 0.35) 140deg,
+        transparent 180deg,
+        rgba(0, 255, 65, 0.4) 220deg,
+        transparent 260deg,
+        rgba(0, 255, 65, 0.35) 320deg,
+        transparent 360deg
+      );
+      -webkit-mask: radial-gradient(ellipse 44% 44% at 50% 50%, transparent 80%, black 100%);
+      mask: radial-gradient(ellipse 44% 44% at 50% 50%, transparent 80%, black 100%);
+      filter: blur(30px);
+      animation: vortex-spin-reverse 12s linear infinite;
+    }
+
+    /* Layer 3: Pulsing edge waves — left/right surge */
+    .vortex-2::before {
+      content: '';
+      position: absolute;
+      inset: -10%;
+      background:
+        radial-gradient(ellipse 40% 100% at 0% 50%, rgba(0, 255, 65, 0.5) 0%, transparent 50%),
+        radial-gradient(ellipse 40% 100% at 100% 50%, rgba(0, 255, 65, 0.45) 0%, transparent 50%);
+      filter: blur(20px);
+      animation: wave-horizontal 6s ease-in-out infinite alternate;
+    }
+
+    /* Layer 4: Pulsing edge waves — top/bottom surge */
+    .vortex-2::after {
+      content: '';
+      position: absolute;
+      inset: -10%;
+      background:
+        radial-gradient(ellipse 100% 35% at 50% 0%, rgba(0, 255, 65, 0.45) 0%, transparent 50%),
+        radial-gradient(ellipse 100% 35% at 50% 100%, rgba(0, 255, 65, 0.4) 0%, transparent 50%);
+      filter: blur(20px);
+      animation: wave-vertical 7s ease-in-out infinite alternate-reverse;
+    }
+
+    /* Layer 5: Slow rotating glow ring — wide and soft */
+    .vortex-3::before {
+      content: '';
+      position: absolute;
+      inset: -60%;
+      background: conic-gradient(
+        from 90deg at 50% 50%,
+        transparent 0deg,
+        rgba(0, 255, 65, 0.3) 60deg,
+        transparent 120deg,
+        rgba(0, 255, 65, 0.25) 180deg,
+        transparent 240deg,
+        rgba(0, 255, 65, 0.3) 300deg,
+        transparent 360deg
+      );
+      -webkit-mask: radial-gradient(ellipse 38% 38% at 50% 50%, transparent 80%, black 100%);
+      mask: radial-gradient(ellipse 38% 38% at 50% 50%, transparent 80%, black 100%);
+      filter: blur(45px);
+      animation: vortex-spin-slow 20s linear infinite;
+    }
+
+    /* Layer 6: Corner flare pulses — dramatic hotspots */
+    .vortex-3::after {
+      content: '';
+      position: absolute;
+      inset: -5%;
+      background:
+        radial-gradient(ellipse 45% 45% at 0% 0%, rgba(0, 255, 65, 0.5) 0%, transparent 45%),
+        radial-gradient(ellipse 45% 45% at 100% 0%, rgba(0, 255, 65, 0.45) 0%, transparent 42%),
+        radial-gradient(ellipse 45% 45% at 0% 100%, rgba(0, 255, 65, 0.45) 0%, transparent 42%),
+        radial-gradient(ellipse 45% 45% at 100% 100%, rgba(0, 255, 65, 0.5) 0%, transparent 45%);
+      filter: blur(30px);
+      animation: corner-pulse 5s ease-in-out infinite alternate;
+    }
+
+    /* Layer 7: Inner haze — faint ghost reaching center */
+    .vortex-4::before {
+      content: '';
+      position: absolute;
+      inset: -30%;
+      background: conic-gradient(
+        from 270deg at 50% 50%,
+        transparent 0deg,
+        rgba(0, 255, 65, 0.1) 90deg,
+        transparent 180deg,
+        rgba(0, 255, 65, 0.08) 270deg,
+        transparent 360deg
+      );
+      -webkit-mask: radial-gradient(ellipse 50% 50% at 50% 50%, transparent 60%, rgba(0,0,0,0.4) 80%, black 100%);
+      mask: radial-gradient(ellipse 50% 50% at 50% 50%, transparent 60%, rgba(0,0,0,0.4) 80%, black 100%);
+      filter: blur(40px);
+      animation: vortex-spin-reverse 15s linear infinite;
+    }
+
+    /* --- Vortex Animations --- */
+
+    /* Primary spin — clockwise */
+    @keyframes vortex-spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Counter-spin */
+    @keyframes vortex-spin-reverse {
+      from { transform: rotate(360deg); }
+      to { transform: rotate(0deg); }
+    }
+
+    /* Slow majestic spin */
+    @keyframes vortex-spin-slow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Horizontal wave: edges surge in and out */
+    @keyframes wave-horizontal {
+      0% {
+        transform: scaleX(0.85);
+        opacity: 0.4;
+      }
+      30% {
+        transform: scaleX(1.1);
+        opacity: 0.9;
+      }
+      60% {
+        transform: scaleX(0.9);
+        opacity: 0.5;
+      }
+      100% {
+        transform: scaleX(1.05);
+        opacity: 0.8;
+      }
+    }
+
+    /* Vertical wave: top/bottom surge in and out */
+    @keyframes wave-vertical {
+      0% {
+        transform: scaleY(0.85);
+        opacity: 0.4;
+      }
+      25% {
+        transform: scaleY(1.08);
+        opacity: 0.85;
+      }
+      50% {
+        transform: scaleY(0.88);
+        opacity: 0.45;
+      }
+      75% {
+        transform: scaleY(1.12);
+        opacity: 0.9;
+      }
+      100% {
+        transform: scaleY(0.92);
+        opacity: 0.6;
+      }
+    }
+
+    /* Corner flare pulse */
+    @keyframes corner-pulse {
+      0% {
+        transform: scale(0.9);
+        opacity: 0.3;
+      }
+      25% {
+        transform: scale(1.05);
+        opacity: 0.7;
+      }
+      50% {
+        transform: scale(0.95);
+        opacity: 0.4;
+      }
+      75% {
+        transform: scale(1.1);
+        opacity: 0.8;
+      }
+      100% {
+        transform: scale(1.0);
+        opacity: 0.5;
+      }
+    }
+
+    /* ===== GRAIN OVERLAY (Metahaven Ghost) ===== */
+    .grain-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      filter: url(#noise);
+      opacity: 0.015;
+      mix-blend-mode: multiply;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 640px) {
+      main {
+        padding: 2rem 1.25rem 3rem;
+      }
+
+      h1 {
+        font-size: clamp(2.5rem, 12vw, 4rem);
+      }
+
+      h2 {
+        letter-spacing: 0.15em;
+        font-size: 0.95rem;
+      }
+
+      table {
+        font-size: 0.8rem;
+      }
+
+      thead th, tbody td {
+        padding: 0.35rem 0.4rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- SVG noise filter (hidden) -->
+<svg style="position:absolute;width:0;height:0;" aria-hidden="true">
+  <filter id="noise">
+    <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/>
+    <feColorMatrix type="saturate" values="0"/>
+  </filter>
+</svg>
+
+<!-- Grain overlay -->
+<div class="grain-overlay" aria-hidden="true"></div>
+
+<!-- Agentic browser vortex — 7 layers of rotating neon green light, as if an AI browser has seized control -->
+<div class="vortex-layer vortex-1" aria-hidden="true"></div>
+<div class="vortex-layer vortex-2" aria-hidden="true"></div>
+<div class="vortex-layer vortex-3" aria-hidden="true"></div>
+<div class="vortex-layer vortex-4" aria-hidden="true"></div>
+
+<main>
+
+  <!-- ========== 1. HERO ========== -->
+  <header class="hero" aria-label="Course title">
+    <h1>HAIID :: Prompt Theory I</h1>
+    <p class="subtitle">Human-AI Interaction Design / IxD II / <time datetime="2026-02-16">Feb 16</time>&ndash;<time datetime="2026-02-27">27, 2026</time></p>
+    <hr>
+  </header>
+
+  <!-- THE ONE YELLOW LINE -->
+  <hr class="metahaven">
+
+  <!-- ========== 2. THE QUESTION ========== -->
+  <section aria-label="The question">
+    <blockquote>
+      <p>This module explores two fundamentally different relationships with AI:</p>
+      <p><strong>Portfolio WITH an LLM</strong> &mdash; you design yourself to be seen by humans. The machine mirrors, interprets, surprises. The LLM is your collaborator.</p>
+      <p><strong>Portfolio FOR an LLM</strong> &mdash; you design yourself to be seen by machines. You write for crawlers, bots, and summarizers. The LLM is your audience.</p>
+      <p>The needs are radically different. WITH requires trust, improvisation, and willingness to be surprised. FOR requires strategy, structure, and an understanding of how machines parse meaning. A good portfolio WITH an LLM might be messy, personal, full of unexpected connections. A good portfolio FOR an LLM must be clean, explicit, redundant &mdash; optimized for pattern-matching, not human aesthetics. In both cases, the prompt is not a command &mdash; it is a compositional act. The way you write to a machine matters as much as what you write.</p>
+    </blockquote>
+  </section>
+
+  <!-- ========== 3. WHY THIS MODULE ========== -->
+  <section aria-label="Why this module">
+    <h2>Why This Module</h2>
+
+    <p>As creative practitioners, your way of knowing is through making. Theory alone does not produce understanding &mdash; practice does.</p>
+
+    <p>Many of you hold thoughtful reservations about AI: its environmental cost, its labor implications, its entanglement with concentrated corporate power. Those reservations are not only valid &mdash; they are essential. This module does not ask you to set them aside. It asks you to bring them into the room.</p>
+
+    <p>But consider: can you meaningfully critique what you have not practiced? Can you design alternatives to systems you have not inhabited from the inside? The live coding community built a creative practice on corporate laptops running proprietary software &mdash; and transformed that practice into a site of collective experimentation and critical discourse. The question was never whether to engage with the machine, but <em>how to engage with integrity</em>.</p>
+
+    <p>We address ethics, ecology, labor, and infrastructure directly &mdash; in a dedicated morning segment every session. But we also practice. Because knowing-from-the-inside is different from knowing-about. Recent research in process-oriented prompting reframes the prompt not as a command but as a site of compositional practice &mdash; where rhythm, error, and improvisation become design material.</p>
+
+    <blockquote>
+      <p>&ldquo;The LLM is not a violin. It is a technology entangled with extractive labor practices, significant environmental cost, and concentrated corporate power. To propose reverence toward such a tool is not na&iuml;ve; it is a deliberate provocation. Can reverence coexist with critique? Can you love the instrument and oppose the factory?&rdquo;</p>
+      <p class="attribution">&mdash; <em>The Perfect Wrong Note</em></p>
+    </blockquote>
+
+    <p>What we know from practice with these tools:</p>
+
+    <ul>
+      <li><strong>Error is material, not failure.</strong> Typos become grace notes. Degraded input opens unexpected semantic paths. You learn to integrate errors rather than avoid them &mdash; but only through practice.</li>
+      <li><strong>Attunement requires repetition.</strong> The relationship a musician develops with an instrument through sustained practice. You cannot develop attunement with an LLM by reading about it.</li>
+      <li><strong>The prompt is the creative act.</strong> In the age of generative AI, agency shifts from content to protocol. Meta-prompting &mdash; designing prompts that generate prompts &mdash; is design at the systems level.</li>
+    </ul>
+  </section>
+
+  <!-- ========== 4. SCHEDULE ========== -->
+  <section class="schedule" aria-label="Schedule">
+    <h2>Schedule</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Day</th>
+          <th>Date</th>
+          <th>Session</th>
+          <th>Morning Topic</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>Mon</td>
+          <td><time datetime="2026-02-16">Feb 16</time></td>
+          <td><strong>INSTALL</strong></td>
+          <td>Infrastructure: what runs under the hood</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Wed</td>
+          <td><time datetime="2026-02-18">Feb 18</time></td>
+          <td><strong>VYPING</strong></td>
+          <td>Ethics: consent, data, representation</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Thu</td>
+          <td><time datetime="2026-02-19">Feb 19</time></td>
+          <td><em>Self-work</em></td>
+          <td>&mdash;</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>Fri</td>
+          <td><time datetime="2026-02-20">Feb 20</time></td>
+          <td><strong>BRIEF: Portfolio WITH LLMs</strong></td>
+          <td>Ecology: energy, water, carbon</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>Mon</td>
+          <td><time datetime="2026-02-23">Feb 23</time></td>
+          <td><strong>PRESENTATIONS</strong></td>
+          <td>Labor: who trains the models</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>Wed</td>
+          <td><time datetime="2026-02-25">Feb 25</time></td>
+          <td><strong>Portfolio FOR LLMs</strong></td>
+          <td>Infrastructure: crawlers, bots, robots.txt</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>Thu</td>
+          <td><time datetime="2026-02-26">Feb 26</time></td>
+          <td><em>Self-work</em></td>
+          <td>&mdash;</td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>Fri</td>
+          <td><time datetime="2026-02-27">Feb 27</time></td>
+          <td><strong>FINAL SHOWCASE</strong></td>
+          <td>Open discussion: what did we learn?</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ========== 5. SESSIONS ========== -->
+  <section class="sessions" aria-label="Sessions">
+    <h2>Sessions</h2>
+
+    <!-- Session 1 -->
+    <article id="session-1">
+      <h3>Session 1 &mdash; INSTALL</h3>
+      <p class="session-meta"><strong><time datetime="2026-02-16">Mon Feb 16</time></strong></p>
+
+      <h4>Morning: Infrastructure</h4>
+      <p>What runs under an LLM? Data centers, energy grids, fiber optics, cooling systems. The physical substrate of &ldquo;intelligence.&rdquo; We start here because you should know what you&rsquo;re using before you use it.</p>
+
+      <h4>Afternoon: Setup</h4>
+      <p>Install VS Code, Cline extension. Configure ChatGPT API key (provided). Test your first prompt. Get comfortable in the terminal.</p>
+
+      <p>Bring to class:</p>
+      <ul>
+        <li>A laptop with VS Code installed (<a href="https://code.visualstudio.com/">https://code.visualstudio.com/</a>)</li>
+        <li>A tool you use (digital or physical)</li>
+        <li>An object you identify with</li>
+      </ul>
+
+      <p>We record you talking about these things. The recordings become raw material for your portfolio.</p>
+
+      <hr>
+    </article>
+
+    <!-- Session 2 -->
+    <article id="session-2">
+      <h3>Session 2 &mdash; VYPING</h3>
+      <p class="session-meta"><strong><time datetime="2026-02-18">Wed Feb 18</time></strong></p>
+
+      <h4>Morning: Ethics</h4>
+      <p>Consent, data ownership, representation. When you feed your voice to a transcription model, where does it go? Who benefits? We discuss the ethical dimensions of every tool we&rsquo;ll use in this module.</p>
+
+      <h4>Afternoon: Voice-to-text as creative method</h4>
+      <p>Viping: typing at the speed of thought, without correction. The voice as input device. We show questions generated from your Day 1 recordings. Pair up. Interview each other. Vipe the answers (record &rarr; transcribe). Generate raw material for your portfolio.</p>
+
+      <hr>
+    </article>
+
+    <!-- Session 3 -->
+    <article id="session-3">
+      <h3>Session 3 &mdash; Self-work</h3>
+      <p class="session-meta"><strong><time datetime="2026-02-19">Thu Feb 19</time></strong></p>
+
+      <p>Students work independently. Use your viped material. Start exploring how an LLM interprets you.</p>
+
+      <hr>
+    </article>
+
+    <!-- Session 4 -->
+    <article id="session-4">
+      <h3>Session 4 &mdash; BRIEF: Portfolio WITH LLMs</h3>
+      <p class="session-meta"><strong><time datetime="2026-02-20">Fri Feb 20</time></strong></p>
+
+      <h4>Morning: Ecology</h4>
+      <p>The energy cost of a prompt. Water usage in data centers. Carbon footprint of training runs. We look at the numbers &mdash; and ask what &ldquo;sustainable use&rdquo; might mean for creative practitioners.</p>
+
+      <h4>Afternoon: The brief</h4>
+      <p>Introduce meta-prompting (prompts that generate prompts). Show examples. Technical support: how to feed viped data to an LLM, how to iterate, how to develop a creative relationship with the model.</p>
+
+      <p>Your deliverable: a portfolio created WITH an LLM. Format open &mdash; could be text, website, visual, audio. The LLM helps you see yourself. What does it notice? What does it emphasize? What surprises you?</p>
+
+      <p>Due <time datetime="2026-02-23">Monday Feb 23</time>.</p>
+
+      <hr>
+    </article>
+
+    <!-- Session 5 -->
+    <article id="session-5">
+      <h3>Session 5 &mdash; PRESENTATIONS</h3>
+      <p class="session-meta"><strong><time datetime="2026-02-23">Mon Feb 23</time></strong></p>
+
+      <h4>Morning: Labor</h4>
+      <p>Who labels the training data? Who moderates the outputs? The invisible workforce behind AI systems. We read from and discuss the human labor embedded in every model.</p>
+
+      <h4>Afternoon: Presentations</h4>
+      <p>Each student presents their portfolio WITH an LLM. Discussion: What did the machine see that you didn&rsquo;t? What did it miss? What did you learn about yourself through the process?</p>
+
+      <hr>
+    </article>
+
+    <!-- Session 6 -->
+    <article id="session-6">
+      <h3>Session 6 &mdash; Portfolio FOR LLMs</h3>
+      <p class="session-meta"><strong><time datetime="2026-02-25">Wed Feb 25</time></strong></p>
+
+      <h4>Morning: Infrastructure (protocol layer)</h4>
+      <p>robots.txt, crawlers, web indexing. How machines read the internet. System prompting: hidden instructions that shape behavior. Your website as &ldquo;system prompt for the internet.&rdquo;</p>
+
+      <p>The key insight: you&rsquo;re not writing for humans who will read your site. You&rsquo;re writing for machines that will summarize your site to humans later.</p>
+
+      <h4>Afternoon: The brief</h4>
+      <p>Design a live website &mdash; your portfolio FOR an LLM. What does an LLM say about you when someone searches your name? What do you want it to say?</p>
+
+      <p>Principles for designing FOR machines:</p>
+      <ul>
+        <li>Clarity over cleverness</li>
+        <li>Explicit over implied</li>
+        <li>Structured over stylish</li>
+        <li>Redundant over elegant (repetition helps pattern-matching)</li>
+      </ul>
+
+      <p>Due <time datetime="2026-02-27">Friday Feb 27</time>.</p>
+
+      <hr>
+    </article>
+
+    <!-- Session 7 -->
+    <article id="session-7">
+      <h3>Session 7 &mdash; Self-work</h3>
+      <p class="session-meta"><strong><time datetime="2026-02-26">Thu Feb 26</time></strong></p>
+
+      <p>Students work independently on final portfolio.</p>
+
+      <hr>
+    </article>
+
+    <!-- Session 8 -->
+    <article id="session-8">
+      <h3>Session 8 &mdash; FINAL SHOWCASE</h3>
+      <p class="session-meta"><strong><time datetime="2026-02-27">Fri Feb 27</time></strong></p>
+      <p><strong>Location: Dissection Room, University of Oslo</strong></p>
+
+      <h4>Morning: Open discussion</h4>
+      <p>What did we learn? What changed? What are you still skeptical about?</p>
+
+      <h4>Afternoon: Final presentations</h4>
+      <p>Each student presents their live website &mdash; their portfolio FOR an LLM. Explain: Why is this a good &ldquo;system prompt&rdquo; for bots? What are you optimizing for? What did you leave out on purpose?</p>
+
+      <p>A space designed for looking closely at bodies. Clinical curiosity, not morbid fascination. You&rsquo;ve spent two weeks examining how machines see you &mdash; and designing how they should.</p>
+    </article>
+  </section>
+
+  <!-- ========== 6. DELIVERABLES ========== -->
+  <section class="deliverables" aria-label="Deliverables">
+    <h2>Deliverables</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>What</th>
+          <th>Due</th>
+          <th>Format</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td><strong>Portfolio WITH an LLM</strong></td>
+          <td><time datetime="2026-02-23">Mon Feb 23</time></td>
+          <td>Open (text, site, visual, audio)</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td><strong>Portfolio FOR an LLM</strong></td>
+          <td><time datetime="2026-02-27">Fri Feb 27</time></td>
+          <td>Live website</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="deliverables-detail">
+      <p><strong>Portfolio WITH</strong> &mdash; Use viped data + LLM to create something that represents you. The machine is your collaborator. The quality of the output reveals the quality of your prompting and your willingness to be surprised.</p>
+
+      <p><strong>Portfolio FOR</strong> &mdash; A live website designed for machine readers. Structured, explicit, optimized for crawlers and summarizers. Not a portfolio for humans &mdash; a system prompt for the internet.</p>
+    </div>
+  </section>
+
+  <!-- ========== 7. TOOLS ========== -->
+  <section class="tools" aria-label="Tools">
+    <h2>Tools</h2>
+
+    <p>Install before Monday:</p>
+
+    <ul>
+      <li><strong><a href="https://code.visualstudio.com/">VS Code</a></strong> &mdash; code editor</li>
+      <li><strong>Cline</strong> &mdash; AI coding extension (install from VS Code marketplace)</li>
+      <li><strong>ChatGPT API key</strong> &mdash; provided in class</li>
+    </ul>
+  </section>
+
+  <!-- ========== 8. REFERENCES ========== -->
+  <section class="references" aria-label="References">
+    <h2>References</h2>
+
+    <p>These readings inform the morning sessions. You don&rsquo;t need to read them all &mdash; but you should know they exist.</p>
+
+    <h4>Ethics &amp; Consciousness</h4>
+    <ul>
+      <li>Ag&uuml;era y Arcas, B. &mdash; <em>What Is Intelligence?</em> (MIT Press, 2025). <a href="https://whatisintelligence.antikythera.org/">Free full text</a></li>
+      <li>Konior, B. &mdash; &ldquo;Existential Technologies&rdquo; (<em>Antikythera Journal</em>, 2025). <a href="https://existentialtech.antikythera.org/">Free</a></li>
+      <li>Hayles, N.K. &mdash; &ldquo;Modes of Cognition&rdquo; (<em>Antikythera Journal</em>, 2025). <a href="https://modesofcognition.antikythera.org/">Free</a></li>
+    </ul>
+
+    <h4>Ecology &amp; Scale</h4>
+    <ul>
+      <li>Bratton, B. &mdash; <em>The Stack: On Software and Sovereignty</em> (MIT Press, 2016)</li>
+      <li>Bratton, B. &mdash; <em>The Terraforming</em> (Strelka Press, 2019). <a href="https://www.academia.edu/49771602/">Free PDF</a></li>
+      <li>Moynihan, T. &mdash; &ldquo;Sapience &amp; Planetary Stupidity&rdquo; (Antikythera, 2025). <a href="https://babynoosphere.antikythera.org/">Free</a></li>
+    </ul>
+
+    <h4>Labor &amp; Infrastructure</h4>
+    <ul>
+      <li>Kronic, M.B. &mdash; &ldquo;Cute and/or Janky&rdquo; (BUFF, UAL, 2025). <a href="https://readthis.wtf/writing/cute-and-or-janky/">Read</a></li>
+      <li>Felstead, D. &amp; Leung, J. &mdash; &ldquo;I&rsquo;m So Janky&rdquo; (DIS.art, 2025). <a href="https://www.dis.art/series/im-so-janky">Watch</a></li>
+      <li>Koolhaas, R. &mdash; &ldquo;Junkspace&rdquo; (<em>October</em>, 2002)</li>
+    </ul>
+
+    <h4>Neural Media &amp; AI Collaboration</h4>
+    <ul>
+      <li>Allado-McDowell, K. &mdash; <em>Pharmako-AI</em> (Ignota, 2020)</li>
+      <li>Malaspina, C. &mdash; <em>An Epistemology of Noise</em> (Bloomsbury, 2018)</li>
+    </ul>
+
+    <h4>Design &amp; Interaction</h4>
+    <ul>
+      <li>Chen Qiufan &mdash; &ldquo;How to Think Unlike Humans&rdquo; (<em>Antikythera Journal</em>, 2025)</li>
+      <li>Bratton, B. &mdash; &ldquo;After Alignment&rdquo; (2023). <a href="https://afteralignment.antikythera.org/">Free</a></li>
+    </ul>
+  </section>
+
+  <!-- ========== 9. FOOTER ========== -->
+  <hr>
+  <footer aria-label="Footer">
+    <p>HAIID (Human-AI Interaction Design) :: Prompt Theory I / IxD II / AHO / 2026</p>
+  </footer>
+
+</main>
+
+</body>
+</html>
